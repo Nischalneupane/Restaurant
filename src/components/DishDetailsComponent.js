@@ -24,9 +24,9 @@ class DishDetails extends Component {
       })
     }
 
-    handleSubmit(value){
-      console.log(`The current state is ${JSON.stringify(value)}`)
-      alert(`The current state is ${JSON.stringify(value)}`)
+    handleSubmit(values){
+      // alert(JSON.stringify(values));
+      this.props.addComment(this.props.dish.id,values.rating, values.author, values.comment);
     }
 
 
@@ -35,14 +35,14 @@ class DishDetails extends Component {
           <div className="container">  
             <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                   <ModalHeader toggle={this.toggleModal}>
-                    <h3> Submit Comment </h3>
+                    Submit Comment
                   </ModalHeader>
                   <ModalBody>
                     <LocalForm onSubmit={(valueS) => this.handleSubmit(valueS)}>
                       <Row className="form-group">
-                        <Label md={12} >Rating</Label>
+                        <Label md={12}>Rating</Label>
                         <Col md={12}>
-                        <Control.select model=".Rating" name="Rating" className="form-control">
+                        <Control.select model=".rating" name="rating" className="form-control">
                           <option>1</option>
                           <option>2</option>
                           <option>3</option>
@@ -52,16 +52,16 @@ class DishDetails extends Component {
                         </Col>
                       </Row>
                       <Row className="form-group">
-                        <Label htmlFor="fullname" md={12}>Your Name</Label>
+                        <Label htmlFor="author" md={12}>Your Name</Label>
                         <Col md={12}>
-                          <Control.text model=".fullname" name="fullname" id="fullname"
+                          <Control.text model=".author" name="author" id="author"
                             placeholder="Your name"
                             className="form-control"
                             validators={{required, maxLength: maxLength(20), minLength: minLength(5)}}
                           />
                           <Errors
                             className="text-danger"
-                            model=".fullname"
+                            model=".author"
                             show="touched"
                             messages={{
                               required: 'Required. ',
@@ -105,7 +105,7 @@ class DishDetails extends Component {
                   <RenderDish dish={this.props.dish} />
                 </div>
                 <div className="col-md-6 col-12">
-                  <RenderComment comment={this.props.comments} />
+                  <RenderComment comment={this.props.comments}/>
                   <Button onClick={this.toggleModal} className="btn btn-outline-dark">
                   <span className="fa fa-comment"></span> Submit Comment
                   </Button>
@@ -127,11 +127,11 @@ function RenderDish({dish}){
   );
 }
 
-function RenderComment({comment}){
+function RenderComment({comment }){
   return(
   comment.map((item) =>{
     return (
-      <div>
+      <div key={item.id}>
         <blockquote>{item.comment}</blockquote>
         <blockquote className="blockquote-footer"><b>{item.author},
           {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(item.date)))}</b>
