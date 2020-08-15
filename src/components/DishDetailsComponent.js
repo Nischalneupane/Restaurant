@@ -13,7 +13,7 @@ class DishDetails extends Component {
       super(props)
     
       this.state = {
-        isModalOpen: false
+        isModalOpen: false,
       }
       this.toggleModal= this.toggleModal.bind(this);
     }
@@ -30,91 +30,13 @@ class DishDetails extends Component {
     }
 
 
-  render(){    
+  render(){  
+    if(this.props.dish!=null){
         return (      
-          <div className="container">  
-            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                  <ModalHeader toggle={this.toggleModal}>
-                    Submit Comment
-                  </ModalHeader>
-                  <ModalBody>
-                    <LocalForm onSubmit={(valueS) => this.handleSubmit(valueS)}>
-                      <Row className="form-group">
-                        <Label md={12}>Rating</Label>
-                        <Col md={12}>
-                        <Control.select model=".rating" name="rating" className="form-control">
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
-                        </Control.select>
-                        </Col>
-                      </Row>
-                      <Row className="form-group">
-                        <Label htmlFor="author" md={12}>Your Name</Label>
-                        <Col md={12}>
-                          <Control.text model=".author" name="author" id="author"
-                            placeholder="Your name"
-                            className="form-control"
-                            validators={{required, maxLength: maxLength(20), minLength: minLength(5)}}
-                          />
-                          <Errors
-                            className="text-danger"
-                            model=".author"
-                            show="touched"
-                            messages={{
-                              required: 'Required. ',
-                              maxLength: 'Your name should contian less than 20 characters',
-                              minLength: 'Your name should contain more than 5 characters'
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="form-group">
-                        <Label htmlFor="comment" md={12}>Comment</Label>
-                        <Col md={12}>
-                          <Control.textarea model=".comment" id="comment" name="comment"
-                            className="form-control" 
-                            rows="6"
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="form-group">
-                        <Col md={{size:10}}>
-                          <Button type="submit" color="primary" onClick={this.toggleModal}>
-                            Submit   
-                          </Button>
-                        </Col>
-                        </Row>
-                    </LocalForm>
-                  </ModalBody>
-                </Modal>
-              <div className="row">
-                  <Breadcrumb>
-                      <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                      <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-                  </Breadcrumb>
-                  <div className="col-12">
-                      <h3>{this.props.dish.name}</h3>
-                      <hr />
-                  </div>                
-              </div>
-              <div className="row mb-2 mt-2">
-                <div className="col-md-6 col-12">
-                  <RenderDish dish={this.props.dish} />
-                </div>
-                <div className="col-md-6 col-12">
-                  <RenderComment comment={this.props.comments}/>
-                  <Button onClick={this.toggleModal} className="btn btn-outline-dark">
-                  <span className="fa fa-comment"></span> Submit Comment
-                  </Button>
-                </div>
-                </div>
-            </div>
-        );
+              <div></div>
+            );
     }
-  
+  }
 }
 
 function RenderDish({dish}){
