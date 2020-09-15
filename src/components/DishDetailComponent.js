@@ -4,6 +4,7 @@ import { LocalForm, Control, Errors } from 'react-redux-form'
 import { Link } from 'react-router-dom';
 import Loading from './LoadingComponent';
 import { baseURL } from '../shared/baseUrl';
+import { FadeTransform, Stagger, Fade } from 'react-animation-components'; 
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -26,7 +27,7 @@ class CommentForm extends Component {
     }
 
     handleSubmit(values){
-      this.props.addComment(this.props.dishId,values.rating, values.fullname, values.comment);
+      this.props.postComment(this.props.dishId,values.rating, values.fullname, values.comment);
     }
 
 
@@ -90,7 +91,7 @@ class CommentForm extends Component {
                     </LocalForm>
                   </ModalBody>
                 </Modal>
-                <Button onClick={this.toggleModal} className="btn btn-outline-dark">
+                <Button onClick={this.toggleModal} className="btn btn-light">
                   <span className="fa fa-comment"></span> Submit Comment
                 </Button>
             </div>
@@ -122,30 +123,34 @@ function DishDetails(props) {
   
   else if(props.dish !=null)
       return(
-          <div className="container">
-              <div className="row">
-                  <Breadcrumb>
-                      <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                      <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
-                  </Breadcrumb>
-                  <div className="col-12">
-                      <h3>{props.dish.name}</h3>
-                      <hr />
-                  </div>                
-              </div>
-              <div className="row mb-2 mt-2">
-                  <div className="col-md-6 col-12">
-                    <RenderDish dish={props.dish} />
+          <FadeTransform in>
+            <div className="dishdetails">
+              <div className="container">
+                  <div className="row">
+                      <Breadcrumb>
+                          <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                          <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                      </Breadcrumb>
+                      <div className="col-12">
+                          <h3>{props.dish.name}</h3>
+                          <hr />
+                      </div>                
                   </div>
-                  <div className="col-md-6 col-12">
-                  <RenderComments comments={props.comments}
-                      addComment={props.addComment}
-                      dishId={props.dish.id}
-                      errMess={props.commentsErrMess}/>
-                  <CommentForm dishId={props.dish.id} addComment={props.addComment} />
+                  <div className="row mt-2 dishdetails__info">
+                      <div className="col-md-6 col-12 dishdetails__dishinfo">
+                        <RenderDish dish={props.dish} />
+                      </div>
+                      <div className="col-md-6 col-12 dishdetails__comments">
+                      <RenderComments comments={props.comments}
+                          postComment={props.postComment}
+                          dishId={props.dish.id}
+                          errMess={props.commentsErrMess}/>
+                      <CommentForm dishId={props.dish.id} postComment={props.postComment} />
+                    </div>
                 </div>
-          </div>
-          </div>
+              </div>
+            </div>
+        </FadeTransform>
       );
   else
     return <div></div>
@@ -153,8 +158,8 @@ function DishDetails(props) {
 
 function RenderDish({dish}){
   return(
-    <Card>
-      <CardImg width="100%" height="380px" src={baseURL +dish.image} alt={dish.name} />
+    <Card style={{background: '#bda6a6', border: 'none'}}>
+      <CardImg width="100%" height="380px" src={dish.image} alt={dish.name} />
         <CardTitle>{dish.name}</CardTitle>
         <CardText>{dish.description}</CardText>
     </Card>
@@ -172,22 +177,29 @@ function RenderComments({ comments, errMess }){
     );
   }
 
-  else if(comments!=null){
+  else if(comments!=null)
     return(
-      comments.map((item) => {
-          return (
-          <div key={item.id}>
-              <blockquote>{item.comment}</blockquote>
-              <blockquote className="blockquote-footer"><b>{item.author},
-              {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(item.date)))}</b>
-              </blockquote>
-          </div>
-  
-        );
-      })
+        <ul className="list-unstyled">
+          <Stagger in>
+            {comments.map((item) => {
+              return (
+                <Fade in>
+                  <div key={item.id}>
+                    <li>
+                      <blockquote style={{color:'white'}}>{item.comment}</blockquote>
+                      <blockquote className="blockquote-footer" style={{color: 'white', opacity: 0.5}}><b>{item.author},
+                      {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(item.date)))}</b>
+                      </blockquote>
+                    </li>
+                  </div>
+                </Fade>
+            ); 
+          })}
+        </Stagger>
+      </ul>
     );
-  }
-
+  
+  
   else  
     return <div></div>  
 }

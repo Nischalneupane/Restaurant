@@ -3,20 +3,25 @@ import Loading from './LoadingComponent';
 import {  Card, CardImg, CardImgOverlay, CardTitle, Breadcrumb, BreadcrumbItem, Container, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { baseURL } from '../shared/baseUrl';
+import { FadeTransform } from 'react-animation-components'
 
 function RenderMenuItems({dish}){
     return(
-    <Card>
-      <Link to={`/menu/${dish.id}`}>
-        <CardImg width="100%" src={baseURL + dish.image} alt={dish.name} />
-        <CardImgOverlay>
-          <CardTitle>{dish.name}</CardTitle>
-        </CardImgOverlay>
-        </Link>
-    </Card>
+    <FadeTransform in 
+      transformProps={{
+        exitTransform:"scale(0.1) translateY(-10%)"
+      }}>
+      <Card>
+        <Link to={`/menu/${dish.id}`}>
+          <CardImg width="100%" height="400px" src={dish.image} alt={dish.name} />
+          <CardImgOverlay>
+            <CardTitle className="menu__dish__header">{dish.name}</CardTitle>
+          </CardImgOverlay>
+          </Link>
+      </Card>
+    </FadeTransform>
    );
   }
-
 
 function Menu(props) {
     const menu = props.dishes.map((dish) => {
@@ -49,17 +54,19 @@ function Menu(props) {
     
     else if(props.dishes){
       return (
-        <div className="container">
-          <div className="row ml-1">
-            <Breadcrumb>
-              <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
-              <BreadcrumbItem active> Menu</BreadcrumbItem>
-            </Breadcrumb>
-          </div>
-          <div className="row">
-            {menu} 
-          </div>
-        </div>  
+        <div className="menu">
+          <div className="container">
+            <div className="row ml-1">
+              <Breadcrumb>
+                <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                <BreadcrumbItem active> Menu</BreadcrumbItem>
+              </Breadcrumb>
+            </div>
+            <div className="row">
+              {menu} 
+            </div>
+          </div>  
+        </div>
       );
     }
 

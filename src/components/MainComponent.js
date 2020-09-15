@@ -5,11 +5,12 @@ import Menu from './MenuComponent';
 import Contact from './ContactComponent';
 import About from './AboutusComponent';
 import Footer from './FooterComponent'
-import DishDetails from './AlternativeDishDetails';
+import DishDetails from './DishDetailComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'; 
 import { connect } from 'react-redux';
-import { addComment, fetchDishes, fetchPromotions, fetchComments } from '../redux/ActionCreator';
-import { actions } from 'react-redux-form';
+import { postComment, fetchDishes, fetchPromotions, fetchComments, fetchLeaders, postFeedbacks } from '../redux/ActionCreator';  //dispatch
+import { actions } from 'react-redux-form'; //form
+import { TransitionGroup, CSSTransition  } from 'react-transition-group' //Animation
 
 const mapStateToProps = state => (
  {  
@@ -21,16 +22,14 @@ const mapStateToProps = state => (
 );
 
 const mapDispatchToProps = (dispatch) => ({
-  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
   fetchDishes: (isLoading, errMess, dishes) => dispatch(fetchDishes(isLoading, errMess, dishes)),
   fetchPromotions: (isLoading, promotions, errMess) => dispatch(fetchPromotions(isLoading, promotions, errMess)),
+  fetchLeaders: (isLoading, errMess, leaders) => dispatch(fetchLeaders(isLoading, errMess, leaders)),
   fetchComments : (comments, errMess) => dispatch(fetchComments(comments, errMess)),
-  resetFeedbackForm: () => dispatch(actions.reset('feedback'))
+  resetFeedbackForm: () => dispatch(actions.reset('feedback')),
+  postFeedbacks: (firstname, lastname, telnum, email, agree, contactType, message) => dispatch(postFeedbacks(firstname, lastname, telnum, email, agree, contactType, message))
 })
-
-
-
-
 
 class Main extends Component {
   
@@ -38,6 +37,8 @@ class Main extends Component {
    this.props.fetchDishes();
    this.props.fetchPromotions();
    this.props.fetchComments();
+   this.props.fetchLeaders();
+   this.props.postFeedbacks();
  }
 
   render() {
@@ -51,14 +52,18 @@ class Main extends Component {
               promotion={this.props.promotions.promotions.filter((promo) => promo.featured)[0]}
               promotionsIsLoading={this.props.promotions.isLoading}
               promotionsErrMess ={this.props.promotions.errMess}
-              leader={this.props.leaders.filter((leader) => leader.featured)[0]}
+              leader={this.props.leaders.leaders.filter((leader) => leader.featured)[0]}
+              leaderIsLoading={this.props.leaders.isLoading}
+              leaderErrMess={this.props.leaders.errMess}
           />
       );
     }
 
     const AboutUS = () =>{
       return(
-        <About leaders={this.props.leaders}  />
+        <About leaders={this.props.leaders.leaders}
+              leaderIsLoading={this.props.leaders.isLoading}
+              leaderErrMess={this.props.leaders.errMess}/>
       );
     }
 
@@ -70,7 +75,7 @@ class Main extends Component {
             dishesIsLoading={this.props.dishes.isLoading} 
             comments={this.props.comments.comments.filter((comment) => comment.dishId === parseInt(match.params.dishId,10))}
             commentsErrMess={this.props.comments.errMess}            
-            addComment = {this.props.addComment} 
+            postComment = {this.props.postComment} 
             />
       );
     };
@@ -80,17 +85,22 @@ class Main extends Component {
     return (
       <div>
         <Header />
-        <Switch>
-          <Route path="/home" component={HomePage} />
-          <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes.dishes}
-                                                            isLoading={this.props.dishes.isLoading} 
-                                                            errMess={this.props.dishes.errMess} />}
-                                                            />
-          <Route path="/contactus" component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} />
-          <Route path="/aboutus" component={AboutUS} />
-          <Route path="/menu/:dishId" component={DishWithId} />
-          <Redirect to="/home" />
-        </Switch> 
+        <TransitionGroup>
+          <CSSTransition key={this.props.location.key} classNames="page" timeout={500}>
+            <Switch>
+              <Route path="/home" component={HomePage} />
+              <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes.dishes}
+                                                                isLoading={this.props.dishes.isLoading} 
+                                                                errMess={this.props.dishes.errMess} />}
+                                                                />
+              <Route exact path="/aboutus" component={AboutUS} />
+              <Route exact path="/contactus" component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm}
+                                                              postFeedback={this.props.postFeedbacks}/>} />
+              <Route path="/menu/:dishId" component={DishWithId} />
+              <Redirect to="/home" />
+            </Switch> 
+          </CSSTransition>
+        </TransitionGroup>
         <Footer />
       </div>
     );

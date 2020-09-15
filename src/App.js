@@ -15,7 +15,7 @@ class App extends Component {
         <BrowserRouter>
           <div>
             <Main />
-        </div> 
+          </div> 
         </BrowserRouter>
       </Provider>
     );

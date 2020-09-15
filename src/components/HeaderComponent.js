@@ -38,7 +38,7 @@ class Header extends Component {
                 <Navbar dark expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav} />
-                        <NavbarBrand className="mr-auto" href="/"><img src='assets/images/logo.png' height="30" width="41" alt='Ristorante Con Fusion' /></NavbarBrand>
+                        <NavbarBrand className="mr-auto" href="/"><img src='https://www.flaticon.com/svg/static/icons/svg/895/895609.svg' height="30" width="41" alt='Ristorante Con Fusion' /></NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                             <NavItem>
@@ -56,20 +56,10 @@ class Header extends Component {
                             </Nav>
                         </Collapse>
                         <Nav className="ml-auto" navbar>
-                            <Button className="btn btn-outline-primary" onClick={this.toggleModal}><span className="fa fa-sign-in">Login</span></Button>
+                            <Button className="btn btn-secondary" onClick={this.toggleModal}><span className="fa fa-sign-in">Login</span></Button>
                         </Nav>
                     </div>
                 </Navbar>
-                <Jumbotron>
-                    <div className="container">
-                        <div className="row row-header">
-                            <div className="col-12 col-sm-6">
-                                <h1>Ristorante con Fusion</h1>
-                                <p>We take inspiration from the World's best cuisines, and create a unique fusion experience. Our lipsmacking creations will tickle your culinary senses!</p>
-                            </div>
-                        </div>
-                    </div>
-                </Jumbotron>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal} >
                     <ModalHeader  toggle={this.toggleModal}>
                             <h3>Login</h3>
@@ -95,7 +85,7 @@ class Header extends Component {
                                 </Label>
                             </FormGroup>
                             <FormGroup>
-                                <Button type="submit" value="submit" color="primary">Login</Button>
+                                <Button type="submit" value="submit" color="primary">Log in</Button>
                             </FormGroup>
                         </Form>
                     </ModalBody>
